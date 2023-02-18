@@ -1,206 +1,272 @@
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
-public class Parsing {
-    private List<String> tokens;
-    private int currentToken;
+public class Parser {
+    private List<Token> tokens;
+    private int current;
 
-    public void parse(List<String> tokens) throws Exception {
-        this.tokens = tokens;
-        this.currentToken = 0;
-        plan();
+    public Parser(String source) {
+        Tokenizer tokenizer = new Tokenizer(source);
+        this.tokens = tokenizer.tokenize();
+        this.current = 0;
     }
 
-    private void plan() throws Exception {
-        while (currentToken < tokens.size()) {
-            statement();
+    public List<Statement> parse() {
+        List<Statement> statements = new ArrayList<>();
+        while (!isAtEnd()) {
+            statements.add(statement());
         }
+        return statements;
     }
 
-    private void statement() throws Exception {
-        String token = getNextToken();
-        switch (token) {
-            case "done":
-            case "relocate":
-                break;
-            case "move":
-                moveCommand();
-                break;
-            case "invest":
-            case "collect":
-                regionCommand();
-                break;
-            case "shoot":
-                attackCommand();
-                break;
-            case "{":
-                blockStatement();
-                break;
-            case "if":
-                ifStatement();
-                break;
-            case "while":
-                whileStatement();
-                break;
-            default:
-                if (isIdentifier(token)) {
-                    assignmentStatement();
-                } else {
-                    throw new Exception("Unexpected token: " + token);
-                }
-        }
-    }
-
-    private void assignmentStatement() throws Exception {
-        match("=");
-        expression();
-    }
-
-    private void actionCommand() throws Exception {
-        // done and relocate do not have arguments
-        // move, invest, and collect have one argument
-        // shoot has two arguments
-        switch (getNextToken()) {
-            case "move":
-                direction();
-                break;
-            case "invest":
-            case "collect":
-                expression();
-                break;
-            case "shoot":
-                direction();
-                expression();
-                break;
-            default:
-                throw new Exception("Invalid action command");
-        }
-    }
-
-    private void moveCommand() throws Exception {
-        direction();
-    }
-
-    private void regionCommand() throws Exception {
-        expression();
-    }
-
-    private void attackCommand() throws Exception {
-        direction();
-        expression();
-    }
-
-    private void direction() throws Exception {
-        switch (getNextToken()) {
-            case "up":
-            case "down":
-            case "upleft":
-            case "upright":
-            case "downleft":
-            case "downright":
-                break;
-            default:
-                throw new Exception("Invalid direction");
-        }
-    }
-
-    private void blockStatement() throws Exception {
-        while (!peekToken().equals("}")) {
-            statement();
-        }
-        match("}");
-    }
-
-    private void ifStatement() throws Exception {
-        match("(");
-        expression();
-        match(")");
-        statement();
-        if (peekToken().equals("else")) {
-            match("else");
-            statement();
-        }
-    }
-
-    private void whileStatement() throws Exception {
-        match("(");
-        expression();
-        match(")");
-        statement();
-    }
-
-    private void expression() throws Exception {
-        term();
-        while (isAddOp(peekToken())) {
-            getNextToken();
-            term();
-        }
-    }
-
-    private void term() throws Exception {
-        factor();
-        while (isMulOp(peekToken())) {
-            getNextToken();
-            factor();
-        }
-    }
-
-    private void factor() throws Exception {
-        power();
-        while (peekToken().equals("^")) {
-            getNextToken();
-            factor();
-        }
-    }
-
-    private void power() throws Exception {
-        String token = getNextToken();
-        if (isNumber(token) || isIdentifier(token)) {
-            // Number or identifier
-        } else if (token.equals("(")) {
-            expression();
-            match(")");
-        } else if (token.equals("opponent") || token.equals("nearby")) {
-            direction();
+    private Statement statement() {
+        if (match(TokenType.MOVE)) {
+            return moveStatement();
+        } else if (match(TokenType.DONE)) {
+            return doneStatement();
+        } else if (match(TokenType.LEFT_BRACE)) {
+            return blockStatement();
+        } else if (match(TokenType.IF)) {
+            return ifStatement();
+        } else if (match(TokenType.WHILE)) {
+            return whileStatement();
         } else {
-            throw new Exception("Invalid expression");
+            return commandStatement();
         }
     }
 
-    private boolean isNumber(String token) {
-        return token.matches("\\d+");
+    private Statement moveStatement() {
+        Direction direction = direction();
+        consume(TokenType.SEMICOLON, "Expect ';' after move command.");
+        return new MoveCommand(direction);
     }
 
-    private boolean isIdentifier(String token) {
-        return token.matches("[a-zA-Z][a-zA-Z0-9]*");
+    private Statement doneStatement() {
+        consume(TokenType.SEMICOLON, "Expect ';' after done command.");
+        return new DoneCommand();
     }
 
-    private boolean isAddOp(String token) {
-        return token.equals("+") || token.equals("-");
-    }
-
-    private boolean isMulOp(String token) {
-        return token.equals("*") || token.equals("/") || token.equals("%");
-    }
-
-    private String getNextToken() throws Exception {
-        if (currentToken >= tokens.size()) {
-            throw new Exception("Unexpected end of input");
+    private Statement blockStatement() {
+        List<Statement> statements = new ArrayList<>();
+        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd()) {
+            statements.add(statement());
         }
-        return tokens.get(currentToken++);
+        consume(TokenType.RIGHT_BRACE, "Expect '}' after block statement.");
+        return new BlockStatement(statements);
     }
 
-    private String peekToken() throws Exception {
-        if (currentToken >= tokens.size()) {
-            throw new Exception("Unexpected end of input");
+    private IfStatement ifStatement() {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+        Expression condition = expression();
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
+        Statement thenBranch = statement();
+        if (match(TokenType.ELSE)) {
+            Statement elseBranch = statement();
+            return new IfStatement(condition, thenBranch, elseBranch);
         }
-        return tokens.get(currentToken);
+        return new IfStatement(condition, thenBranch, null);
     }
 
-    private void match(String expected) throws Exception {
-        if (peekToken().equals(expected)) {
-            getNextToken();
+    private Statement whileStatement() {
+        consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+        Expression condition = expression();
+        consume(TokenType.RIGHT_PAREN, "Expect ')' after while condition.");
+        Statement body = statement();
+        return new WhileStatement(condition, body);
+    }
+
+    private Statement commandStatement() {
+        if (match(TokenType.IDENTIFIER)) {
+            Token identifier = previous();
+            if (match(TokenType.EQUAL)) {
+                Expression value = expression();
+                consume(TokenType.SEMICOLON, "Expect ';' after variable assignment.");
+                return new AssignmentStatement(identifier, value);
+            } else {
+                return actionCommand(identifier);
+            }
         } else {
-            throw new Exception("Expected " + expected);
+            throw error(peek(), "Expect statement.");
+        }
+    }
+
+    private Statement actionCommand(Token identifier) {
+        if (identifier.getType() == TokenType.RELOCATE) {
+            consume(TokenType.SEMICOLON, "Expect ';' after relocate command.");
+            return new RelocateCommand();
+        } else if (identifier.getType() == TokenType.MOVE) {
+            Direction direction = direction();
+            consume(TokenType.SEMICOLON, "Expect ';' after move command.");
+            return new MoveCommand(direction);
+        } else if (identifier.getType() == TokenType.ATTACK) {
+            Direction direction = direction();
+            Expression strength = expression();
+            consume(TokenType.SEMICOLON, "Expect ';' after attack command.");
+            return new AttackCommand(direction, strength);
+        } else if (identifier.getType() == TokenType.COLLECT) {
+            Expression amount = expression();
+            consume(TokenType.SEMICOLON, "Expect ';'after collect command.");
+            return new CollectCommand(amount);
+        } else if (identifier.getType() == TokenType.INVEST) {
+            Expression amount = expression();
+            consume(TokenType.SEMICOLON, "Expect ';'after invest command.");
+            return new InvestCommand(amount);
+        } else {
+            throw error(peek(), "Expect command.");
+        }
+    }
+
+    private Direction direction() {
+        if (match(TokenType.UP)) {
+            if (match(TokenType.LEFT)) {
+                return Direction.UP_LEFT;
+            } else if (match(TokenType.RIGHT)) {
+                return Direction.UP_RIGHT;
+            } else {
+                return Direction.UP;
+            }
+        } else if (match(TokenType.DOWN)) {
+            if (match(TokenType.LEFT)) {
+                return Direction.DOWN_LEFT;
+            } else if (match(TokenType.RIGHT)) {
+                return Direction.DOWN_RIGHT;
+            } else {
+                return Direction.DOWN;
+            }
+        } else {
+            throw error(peek(), "Expect direction after move command.");
+        }
+    }
+
+    private Expression expression() {
+        return additiveExpression();
+    }
+
+    private Expression additiveExpression() {
+        Expression expr = term();
+
+        while (match(TokenType.PLUS, TokenType.MINUS)) {
+            Token operator = previous();
+            Expression right = term();
+            expr = new BinaryExpression(expr, String.valueOf(operator), right);
+        }
+
+        return expr;
+    }
+
+    private Expression term() {
+        Expression expr = factor();
+
+        while (match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.MODULO)) {
+            Token operator = previous();
+            Expression right = factor();
+            expr = new BinaryExpression(expr, String.valueOf(operator), right);
+        }
+
+        return expr;
+    }
+
+    private Expression factor() {
+        Expression expr = power();
+
+        while (match(TokenType.POWER)) {
+            Token operator = previous();
+            Expression right = factor();
+            expr = new BinaryExpression(expr, String.valueOf(operator), right);
+        }
+
+        return expr;
+    }
+
+    private Expression power() {
+        Expression expr = basicExpression();
+
+        while (match(TokenType.CARAT)) {
+            Token operator = previous();
+            Expression right = basicExpression();
+            expr = new Expression(List.of(), List.of(operator.getLexeme()));
+        }
+
+        return expr;
+    }
+
+    //POWER,PRIMARY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    private boolean match(TokenType... types) {
+        for (TokenType type : types) {
+            if (check(type)) {
+                advance();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Token consume(TokenType type, String message) {
+        if (check(type)) {
+            return advance();
+        }
+
+        throw error(peek(), message);
+    }
+
+    private boolean check(TokenType type) {
+        if (isAtEnd()) {
+            return false;
+        }
+
+        return peek().getType() == type;
+    }
+
+    private Token advance() {
+        if (!isAtEnd()) {
+            current++;
+        }
+
+        return previous();
+    }
+
+    private Token peek() {
+        return tokens.get(current);
+    }
+
+    private Token previous() {
+        return tokens.get(current - 1);
+    }
+
+    private boolean isAtEnd() {
+        return peek().getType() == TokenType.EOF;
+    }
+
+    private ParserException error(Token token, String message) {
+        return new ParserException(message);
+    }
+
+    private void synchronize() {
+        advance();
+
+        while (!isAtEnd()) {
+            if (previous().getType() == TokenType.SEMICOLON) {
+                return;
+            }
+
+            switch (peek().getType()) {
+                case PLAN:
+                case IF:
+                case WHILE:
+                case MOVE:
+                case RELOCATE:
+                case DONE:
+                case SHOOT:
+                case COLLECT:
+                case INVEST:
+                    return;
+                default:
+                    // Do nothing.
+            }
+
+            advance();
         }
     }
 }
