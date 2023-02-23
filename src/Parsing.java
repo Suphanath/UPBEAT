@@ -60,6 +60,16 @@ public class Parsing implements Parser {
     }
 
     private Identifier ParseIdentifier() {
+        if (words.contains(tkz.peek())) {
+            tkz.consume();
+            throw new SyntaxError("Error");
+        }
+        if (!tkz.isNumber("" + tkz.peek().charAt(0))) {
+            if (tkz.peek().substring(1).chars().allMatch(Character::isLetterOrDigit)) {
+                return new Identifier(tkz.consume());
+            }
+        }
+        throw new SyntaxError("Error");
     }
 
     private Statement ParseActionCommand() {
@@ -153,8 +163,8 @@ public class Parsing implements Parser {
     }
 
     private Statement ParsePower() {
-        if (tkz.isNumber(tkz.peek())) {
-            return new IntLit(Integer.parseInt(tkz.consume()));
+        if (Tokenizer.isNumber(tkz.peek())) {
+            return (Statement) new IntLit(Integer.parseInt(tkz.consume()));
         } else if (tkz.peek("(")) {
             tkz.consume("(");
             Statement exp = ParseExpression();
@@ -163,8 +173,22 @@ public class Parsing implements Parser {
         } else if (tkz.peek("opponent") || tkz.peek("nearby")) {
             return ParseInfoExpression();
         } else {
-            return ParseIdentifier();
+            return (Statement) ParseIdentifier();
         }
+    }
+
+    private Statement ParseInfoExpression() {
+        if (tkz.peek().equals("opponent")) {
+            tkz.consume();
+            return new InfoExp("opponent");
+        } else if (tkz.peek().equals("nearby")) {
+            tkz.consume();
+            Direction direction = ParseDirection();
+            return new InfoExp("nearby", direction);
+        } else {
+            throw new SyntaxError("SyntaxError");
+        }
+
     }
 
     private Statement ParseAttackCommand() {
@@ -176,7 +200,14 @@ public class Parsing implements Parser {
         }
     }
 
-    private Object ParseDirection() {
+    private Direction ParseDirection() {
+        Direction direction = Direction.getDirection(tkz.peek());
+        tkz.consume();
+        if (direction != null) {
+            return direction;
+        } else {
+            throw new SyntaxError("Error");
+        }
     }
 
     private Statement ParseMoveCommand() {
@@ -205,10 +236,9 @@ public class Parsing implements Parser {
         tkz.consume("else");
         Statement falseStatement = ParseStatement();
         return new IfStatement(Expression, trueStatement, falseStatement);
-
     }
 
-    private Statement ParseBlockStatement() {
+    private BlockStatement ParseBlockStatement() {
         tkz.consume("{");
         LinkedList<Statement> state = new LinkedList<>();
         while (!tkz.peek("}")) {

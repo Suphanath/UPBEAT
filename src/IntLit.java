@@ -4,6 +4,17 @@ public class IntLit implements Statement{
     public IntLit(long val){
         this.val = val;
     }
+
+    @Override
+    public long ev() throws SyntaxError {
+        return 0;
+    }
+
+    @Override
+    public StringBuilder addCommand(StringBuilder s) {
+        return null;
+    }
+
     @Override
     public void PrettyPrint(StringBuilder s) {
         s.append(val);
@@ -11,5 +22,10 @@ public class IntLit implements Statement{
     @Override
     public long ev(Map<String, Integer> bd) {
         return val;
+    }
+
+    @Override
+    public void execute() throws ExecutionError {
+
     }
 }
