@@ -44,9 +44,22 @@ public class Tokenizing implements Tokenizer {
         throw new NoSuchElementException("there are no more tokens");
     }
 
+    private void Comment(){
+        while (current < src.length() && src.charAt(current)!='\n'){
+            current++;
+        }
+    }
+
     private void computeNext() throws IllegalArgumentException{
         StringBuilder s = new StringBuilder();
-        while (current < src.length() && Character.isWhitespace(src.charAt(current))) current++;
+
+        while (current < src.length() && Character.isWhitespace(src.charAt(current))) {
+            if(src.charAt(current)=='#'){
+                Comment();
+            }else{
+                current++;
+            }
+        }
         if(current == src.length()) {
             next = null;
             return;
@@ -57,7 +70,10 @@ public class Tokenizing implements Tokenizer {
             for(current++; current < src.length() && Character.isDigit(src.charAt(current)); current++) {
                 s.append(src.charAt(current));
             }
-        }else if(a == '+' || a == '-' || a == '*' || a == '/' || a == '%' || a == '(' || a == ')'){
+        }else if(a == '_') {
+            s.append(a);
+            current++;
+        }else if("()+-*/%^{}=".contains(String.valueOf(a))){
             s.append(a);
             current++;
         }else if(Character.isAlphabetic(a)){
