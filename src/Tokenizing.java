@@ -31,7 +31,7 @@ public class Tokenizing implements Tokenizer {
     @Override
     public String peek() throws NoSuchElementException {
         if(hasNextToken()) return next;
-        throw new NoSuchElementException("there are no more tokens");
+        throw new NoSuchElementException("it's empty");
     }
 
     @Override

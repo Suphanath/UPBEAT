@@ -1,79 +1,220 @@
-import java.util.NoSuchElementException;
+import java.sql.Statement;
+import java.util.*;
 
 public class Parsing implements Parser {
-    private final Tokenizer tkz;
+    private Tokenizer tkz;
     public Parsing(Tokenizer tkz){
         this.tkz = tkz;
     }
+    private static final Set<String> words = new HashSet<>(Arrays.asList(
+            "collect", "done", "down", "downleft", "downright", "else", "if", "invest", "move",
+            "nearby", "opponent", "relocate", "shoot", "then", "up", "upleft", "upright", "while"));
 
     @Override
-    public Expr parse() throws SyntaxError {
+    public String parse() throws SyntaxError {
         try{
-            Expr rs = Statement();
+            Plan rs = ParsePlan();
             if(tkz.hasNextToken())
                 throw new SyntaxError("token " + tkz.peek() + " is not null");
-            return rs;
+            return rs.evaluate();
         }catch (SyntaxError e){
             throw e;
         }
     }
 
-    private Expr Statement() throws SyntaxError{
-        try{
-            Expr rs = T();
-            while (tkz.hasNextToken() && (tkz.peek("+") || tkz.peek("-"))){
-                if(tkz.peek("+")){
-                    tkz.consume();
-                    rs = new Binary(rs, "+", T());
-                } else {
-                    tkz.consume();
-                    rs = new Binary(rs, "-", T());
-                }
-            }
-            return rs;
-        } catch (IllegalArgumentException | NoSuchElementException e){
-            throw new SyntaxError(e.getMessage());
+    private Plan ParsePlan() throws SyntaxError{
+        Plan plan = new Plan();
+        while (tkz.hasNextToken()){
+            plan.addState(ParseStatement());
+        }
+        return plan;
+    }
+
+    private Statement ParseStatement() throws SyntaxError{
+        if (tkz.peek().equals("if")) {
+            return ParseIfStatement();
+        } else if (tkz.peek().equals("while")) {
+            return ParseWhileStatement();
+        } else if (tkz.peek().equals("{")) {
+            return ParseBlockStatement();
+        } else {
+            return ParseCommand();
         }
     }
 
-    private Expr T() throws SyntaxError{
-        try{
-            Expr rs = F();
-            while (tkz.hasNextToken() &&(tkz.peek("*") || tkz.peek("/") || tkz.peek("%"))){
-                if(tkz.peek("*")){
-                    tkz.consume();
-                    rs = new Binary(rs, "*", F());
-                } else if (tkz.peek("/")) {
-                    tkz.consume();
-                    rs = new Binary(rs, "/", F());
-                } else {
-                    tkz.consume();
-                    rs = new Binary(rs, "%", F());
-                }
-            }
-            return rs;
-        }catch (IllegalArgumentException | NoSuchElementException e){
-            throw new SyntaxError(e.getMessage());
+    private Statement ParseCommand(){
+        if (tkz.peek("done") || tkz.peek("relocate")
+                || tkz.peek("move") || tkz.peek("invest")
+                || tkz.peek("collect") || tkz.peek("shoot")) {
+            return ParseActionCommand();
+        } else {
+            return ParseAssignmentStatement();
         }
     }
 
-    private Expr F() throws SyntaxError{
-        try{
-            if(Character.isDigit(tkz.peek().charAt(0))){
-                return  new IntLit(Integer.parseInt(tkz.consume()));
-            }else if(Character.isAlphabetic(tkz.peek().charAt(0))){
-                return new Var(tkz.consume());
+    private Statement ParseAssignmentStatement() {
+        Identifier identifier = ParseIdentifier();
+        tkz.consume("=");
+        Statement expression = ParseExpression();
+        return new AssignStatement(identifier, "=", expression);
+    }
+
+    private Identifier ParseIdentifier() {
+    }
+
+    private Statement ParseActionCommand() {
+        if (tkz.peek().equals("move")) {
+            return ParseMoveCommand();
+        } else if (tkz.peek().equals("shoot")) {
+            return ParseAttackCommand();
+        } else if (tkz.peek().equals("invest") || tkz.peek().equals("collect")) {
+            return ParseRegionCommand();
+        } else if (tkz.peek().equals("done")) {
+            return ParseDoneCommand();
+        } else if (tkz.peek().equals("relocate")) {
+            return ParseRelocateCommand();
+        } else {
+            throw new SyntaxError("SyntaxError");
+        }
+    }
+
+    private Statement ParseRelocateCommand() {
+        if (tkz.peek("relocate")) {
+            tkz.consume();
+            return new ActionCommand("relocate");
+        }else {
+            throw new SyntaxError("SyntaxError");
+        }
+    }
+
+    private Statement ParseDoneCommand() {
+        if (tkz.peek("done")) {
+            tkz.consume();
+            return new ActionCommand("done");
+        }else {
+            throw new SyntaxError("SyntaxError");
+        }
+    }
+
+    private Statement ParseRegionCommand() {
+        if (tkz.peek("invest")) {
+            tkz.consume();
+            return new ActionCommand("invest", ParseExpression());
+        } else if (tkz.peek("collect")) {
+            tkz .consume();
+            return new ActionCommand("collect", ParseExpression());
+        }else {
+            throw new SyntaxError("SyntaxError");
+        }
+    }
+
+    private Statement ParseExpression() {
+        Statement term = ParseTerm();
+        while (tkz.peek("+") || tkz.peek("-")) {
+            if (tkz.peek().equals("+")) {
+                tkz.consume();
+                term = new Binary(term, ParseTerm(), "+");
+            } else if (tkz.peek().equals("-")) {
+                tkz.consume();
+                term = new Binary(term, ParseTerm(), "-");
             }else {
-                Expr rs = null;
-                if(tkz.peek("(")) {
-                    tkz.consume("(");
-                    rs = E();
-                    tkz.consume(")");
-                }
-                return rs;
+                throw new SyntaxError("SyntaxError");
             }
-        }catch (NoSuchElementException | NumberFormatException | SyntaxError s){
-            throw new SyntaxError(s.getMessage());
         }
+        return term;
+    }
+
+    private Statement ParseTerm() {
+        Statement factor = ParseFactor();
+        while (tkz.peek("*") || tkz.peek("/") || tkz.peek("%")) {
+            if (tkz.peek().equals("*")) {
+                tkz.consume();
+                factor = new Binary(factor, ParseFactor(), "*");
+            } else if (tkz.peek().equals("/")) {
+                tkz.consume();
+                factor = new Binary(factor, ParseFactor(), "/");
+            } else if (tkz.peek().equals("%")) {
+                tkz.consume();
+                factor = new Binary(factor, ParseFactor(), "%");
+            } else {
+                throw new SyntaxError("Error");
+            }
+        }
+        return factor;
+    }
+
+    private Statement ParseFactor() {
+        Statement power = ParsePower();
+        if (tkz.peek("^")) {
+            tkz.consume("^");
+            power = new Binary(power, ParseFactor(), "^");
+        }
+        return power;
+    }
+
+    private Statement ParsePower() {
+        if (tkz.isNumber(tkz.peek())) {
+            return new IntLit(Integer.parseInt(tkz.consume()));
+        } else if (tkz.peek("(")) {
+            tkz.consume("(");
+            Statement exp = ParseExpression();
+            tkz.consume(")");
+            return exp;
+        } else if (tkz.peek("opponent") || tkz.peek("nearby")) {
+            return ParseInfoExpression();
+        } else {
+            return ParseIdentifier();
+        }
+    }
+
+    private Statement ParseAttackCommand() {
+        if (tkz.peek("shoot")) {
+            tkz.consume();
+            return new ActionCommand("shoot", ParseDirection());
+        }else {
+            throw new SyntaxError("SyntaxError");
+        }
+    }
+
+    private Object ParseDirection() {
+    }
+
+    private Statement ParseMoveCommand() {
+        if (tkz.peek("move")) {
+            tkz.consume();
+            return new ActionCommand("move", ParseDirection());
+        }else {
+            throw new SyntaxError("SyntaxError");
+        }
+    }
+
+    private Statement ParseWhileStatement() {
+        tkz.consume("while");
+        Statement Expression = ParseExpression();
+        Statement trueStatement = ParseStatement();
+        return new WhileStatement(Expression, trueStatement);
+    }
+
+    private Statement ParseIfStatement() {
+        tkz.consume("if");
+        tkz.consume("(");
+        Statement Expression = ParseExpression();
+        tkz.consume(")");
+        tkz.consume("then");
+        Statement trueStatement = ParseStatement();
+        tkz.consume("else");
+        Statement falseStatement = ParseStatement();
+        return new IfStatement(Expression, trueStatement, falseStatement);
+
+    }
+
+    private Statement ParseBlockStatement() {
+        tkz.consume("{");
+        LinkedList<Statement> state = new LinkedList<>();
+        while (!tkz.peek("}")) {
+            state.add(ParseStatement());
+        }
+        tkz.consume("}");
+        return new BlockStatement(state);
     }
 }

@@ -1,47 +1,47 @@
 import java.util.Map;
 
-public class Binary implements Expr {
-    private Expr left;
-    private Expr right;
+public class Binary implements Statement {
+    private Statement left;
+    private Statement right;
     private String operator;
 
-    public Binary(Expr left, Expr right, String operator) {
+    public Binary(Statement left, Statement right, String operator) {
         this.left = left;
         this.right = right;
         this.operator = operator;
     }
 
-    public Binary(Expr left, String operator, Expr right){
-        super();
-    }
-
-    public int ev(Map<String, Integer> bd) throws ArithmeticException{
-        int le = left.ev(bd);
-        int re = right.ev(bd);
-        switch (operator) {
-            case "+" -> { return le + re; }
-            case "-" -> { return le - re; }
-            case "*" -> { return le * re; }
-            case "/" -> {
-                if (re  == 0)
-                    throw new ArithmeticException(le + " / " + re + " is error");
-                return le / re;
-            }
-            case "%" -> {
-                if (re == 0)
-                    throw new ArithmeticException(le + " % " + re + " is error");
-                return le % re;
-            }
-        }
-        throw new ArithmeticException("error input");
+    public String operator() {
+        return operator;
     }
 
     @Override
-    public void PrettyPrint(StringBuilder sb) {
-        sb.append("(");
-        left.PrettyPrint(sb);
-        sb.append(operator);
-        right.PrettyPrint(sb);
-        sb.append(")");
+    public long ev() throws ArithmeticException{
+        long le = left.ev();
+        long re = right.ev();
+        long result;
+        String operator = operator();
+        if (operator.equals("+")) {
+            result = le + re;
+        } else if (operator.equals("-")) {
+            result = le - re;
+        } else if (operator.equals("*")) {
+            result = le * re;
+        } else if (operator.equals("/")) {
+            result = le / re;
+        } else if (operator.equals("%")) {
+            result = le % re;
+        } else if (operator.equals("^")) {
+            result = (int) Math.pow(le, re);
+        } else {
+            throw new SyntaxError("Error");
+        }
+        return result;
+    }
+
+    @Override
+    public StringBuilder addCommand(StringBuilder sb) {
+        sb.append("Expression ");
+        return sb;
     }
 }

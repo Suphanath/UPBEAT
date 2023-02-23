@@ -1,3 +1,3 @@
 public interface Parser {
-    Expr parse() throws SyntaxError;
+    String parse() throws SyntaxError;
 }

@@ -1,7 +1,7 @@
 import java.util.Map;
-public class IntLit implements Expr{
-    private final int val;
-    public IntLit(int val){
+public class IntLit implements Statement{
+    private final long val;
+    public IntLit(long val){
         this.val = val;
     }
     @Override
@@ -9,7 +9,7 @@ public class IntLit implements Expr{
         s.append(val);
     }
     @Override
-    public int ev(Map<String, Integer> bd) {
+    public long ev(Map<String, Integer> bd) {
         return val;
     }
 }
