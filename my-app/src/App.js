@@ -1,23 +1,13 @@
 import React from 'react';
-import HexGridDemo from "./Grid.js";
+import './App.css';
+import Canvas from "./components/Canvas";
 
-export default function App() {
-  return (<div style={{backgroundColor: '#98730c'}}>
-    <h1 style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color:'white'
-    }}>UPBEAT</h1>
-    <div className="App" style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      marginTop: "50px"
-    }}>
-      <HexGridDemo />
-      </div>
+function App() {
+  return (
+    <div className="App">
+      <Canvas />
     </div>
   );
 }
+
+export default App;
