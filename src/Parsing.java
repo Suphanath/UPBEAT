@@ -1,25 +1,23 @@
-import java.sql.Statement;
+
 import java.util.*;
 
-public class Parsing implements Parser {
+public class Parsing{
     private Tokenizer tkz;
     public Parsing(Tokenizer tkz){
         this.tkz = tkz;
     }
+    private Plan plans;
+    Player crew;
     private static final Set<String> words = new HashSet<>(Arrays.asList(
             "collect", "done", "down", "downleft", "downright", "else", "if", "invest", "move",
             "nearby", "opponent", "relocate", "shoot", "then", "up", "upleft", "upright", "while"));
 
-    @Override
-    public String parse() throws SyntaxError {
-        try{
-            Plan rs = ParsePlan();
-            if(tkz.hasNextToken())
-                throw new SyntaxError("token " + tkz.peek() + " is not null");
-            return rs.evaluate();
-        }catch (SyntaxError e){
-            throw e;
-        }
+
+    public String parse(String stream,Player crew) throws SyntaxError {
+        this.tkz = new Tokenizer(stream);
+        plans = ParsePlan();
+        this.crew = crew;
+        return plans.evaluate();
     }
 
     private Plan ParsePlan() throws SyntaxError{
@@ -164,7 +162,7 @@ public class Parsing implements Parser {
 
     private Statement ParsePower() {
         if (Tokenizer.isNumber(tkz.peek())) {
-            return (Statement) new IntLit(Integer.parseInt(tkz.consume()));
+            return new IntLit(Integer.parseInt(tkz.consume()));
         } else if (tkz.peek("(")) {
             tkz.consume("(");
             Statement exp = ParseExpression();
@@ -173,18 +171,18 @@ public class Parsing implements Parser {
         } else if (tkz.peek("opponent") || tkz.peek("nearby")) {
             return ParseInfoExpression();
         } else {
-            return (Statement) ParseIdentifier();
+            return ParseIdentifier();
         }
     }
 
     private Statement ParseInfoExpression() {
         if (tkz.peek().equals("opponent")) {
             tkz.consume();
-            return new InfoExp("opponent");
+            return new InfoExp("opponent", crew);
         } else if (tkz.peek().equals("nearby")) {
             tkz.consume();
             Direction direction = ParseDirection();
-            return new InfoExp("nearby", direction);
+            return new InfoExp("nearby", direction, crew);
         } else {
             throw new SyntaxError("SyntaxError");
         }

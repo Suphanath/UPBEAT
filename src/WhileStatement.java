@@ -1,18 +1,34 @@
-import java.beans.Expression;
 
-public class WhileStatement extends Statement {
-    private Expression expression;
-    private Statement statement;
 
-    public WhileStatement(Expression expression, Statement statement) {
+public class WhileStatement implements Statement {
+    private  Statement expression;
+    private  Statement trueStatement;
+
+    public WhileStatement(Statement expression, Statement trueStatement) {
         this.expression = expression;
-        this.statement = statement;
+        this.trueStatement = trueStatement;
+    }
+
+    public Statement Expression() {
+        return expression;
+    }
+
+    public Statement trueState() {
+        return trueStatement;
+    }
+
+
+    @Override
+    public long ev() throws SyntaxError {
+        for (int counter = 0; counter < 10000 && Expression().ev() > 0; counter++){
+            trueStatement.ev();
+        }
+        return 0;
     }
 
     @Override
-    public void execute() {
-        while (expression.evaluate() != 0) {
-            statement.execute();
-        }
+    public StringBuilder addCommand(StringBuilder sb) {
+        sb.append("Whilestatement ");
+        return sb;
     }
 }

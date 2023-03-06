@@ -1,23 +1,39 @@
-import java.beans.Expression;
 
-public class IfStatement implements Statement {
-    private Expression expression;
-    private Statement thenStatement;
-    private Statement elseStatement;
+public class IfStatement implements Statement{
+    private Statement expression;
+    private Statement trueState;
+    private Statement falseState;
 
-    public IfStatement(Expression expression, Statement thenStatement, Statement elseStatement) {
+    public IfStatement(Statement expression, Statement trueState, Statement falseState) {
+        this.trueState = trueState;
         this.expression = expression;
-        this.thenStatement = thenStatement;
-        this.elseStatement = elseStatement;
+        this.falseState = falseState;
+    }
+
+    public Statement Expression() {
+        return expression;
+    }
+
+    public Statement trueState() {
+        return trueState;
+    }
+
+    public Statement falseState() {
+        return falseState;
     }
 
     @Override
-    public void execute() {
-        long value = expression.evaluate();
-        if (value != 0) {
-            thenStatement.execute();
-        } else if (elseStatement != null) {
-            elseStatement.execute();
+    public long ev() throws SyntaxError {
+        if (Expression().ev() > 0) {
+            trueState.ev();
+        } else {
+            falseState.ev();
         }
+        return 0;
     }
+
+    @Override
+    public StringBuilder addCommand(StringBuilder s) {
+        s.append("Ifstatement ");
+        return  s;}
 }

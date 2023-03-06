@@ -2,12 +2,14 @@ import java.beans.Expression;
 import java.util.Map;
 
 public class AssignStatement extends Command {
-    private String identifier;
-    private Expression expression;
+    private Identifier identifier;
+    private Statement expression;
+    private String op;
 
-    public AssignStatement(String identifier, Expression expression) {
+    public AssignStatement(Identifier identifier, String op, Statement expression) {
         this.identifier = identifier;
         this.expression = expression;
+        this.op = op;
     }
 
     @Override
@@ -18,21 +20,5 @@ public class AssignStatement extends Command {
     @Override
     public StringBuilder addCommand(StringBuilder s) {
         return null;
-    }
-
-    @Override
-    public void PrettyPrint(StringBuilder s) {
-
-    }
-
-    @Override
-    public long ev(Map<String, Integer> bd) {
-        return 0;
-    }
-
-    @Override
-    public void execute() {
-        long value = expression.evaluate();
-        // store the value in the identifier
     }
 }

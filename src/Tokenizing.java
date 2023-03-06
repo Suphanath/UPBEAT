@@ -1,10 +1,11 @@
 import java.util.NoSuchElementException;
 
-public class Tokenizing implements Tokenizer {
+public class Tokenizing extends Tokenizer {
     private int current;
     private String next;
     private final String src;
     public Tokenizing(String src){
+        super();
         this.src = src;
         current = 0;
         computeNext();

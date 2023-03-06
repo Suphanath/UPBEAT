@@ -1,18 +1,30 @@
-import java.sql.Statement;
+
 import java.util.LinkedList;
-import java.util.List;
 
-public class BlockStatement implements Statement {
-    private List<Statement> statements;
+import java.util.LinkedList;
 
-    public BlockStatement(LinkedList<Statement> statements) {
-        this.statements = statements;
+public class BlockStatement implements Statement{
+    private LinkedList<Statement> statement;
+
+    public BlockStatement(LinkedList<Statement> list) {
+        this.statement = list;
+    }
+
+    public LinkedList<Statement> getList() {
+        return statement;
     }
 
     @Override
-    public void execute() {
-        for (Statement stmt : statements) {
-            stmt.execute();
+    public long ev() throws SyntaxError {
+        for (Statement st : statement) {
+            st.ev();
         }
+        return 0;
+    }
+
+    @Override
+    public StringBuilder addCommand(StringBuilder sb) {
+        sb.append("Blockstatement ");
+        return sb;
     }
 }

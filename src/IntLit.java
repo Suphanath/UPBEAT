@@ -15,17 +15,4 @@ public class IntLit implements Statement{
         return null;
     }
 
-    @Override
-    public void PrettyPrint(StringBuilder s) {
-        s.append(val);
-    }
-    @Override
-    public long ev(Map<String, Integer> bd) {
-        return val;
-    }
-
-    @Override
-    public void execute() throws ExecutionError {
-
-    }
 }
