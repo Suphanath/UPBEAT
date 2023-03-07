@@ -13,17 +13,17 @@ public class Parsing{
             "nearby", "opponent", "relocate", "shoot", "then", "up", "upleft", "upright", "while"));
 
 
-    public String parse(String stream,Player crew) throws SyntaxError {
-        this.tkz = new Tokenizer(stream);
+    public String parse(String txt,Player crew) throws SyntaxError {
+        this.tkz = new Tokenizer(txt);
         plans = ParsePlan();
         this.crew = crew;
-        return plans.evaluate();
+        return plans.ev();
     }
 
     private Plan ParsePlan() throws SyntaxError{
         Plan plan = new Plan();
         while (tkz.hasNextToken()){
-            plan.addState(ParseStatement());
+            plan.addStatement(ParseStatement());
         }
         return plan;
     }

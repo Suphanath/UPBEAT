@@ -2,34 +2,33 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Pattern;
 public class Tokenizer {
-
     private static final Pattern SPLIT_PATTERN = Pattern.compile("([\\s]++)|(?<=[=+\\-*/%(){}^])|(?=[=+\\-*/%(){}^])");
 
-    private final Queue<String> tokens;
+    private final Queue<String> tkz;
 
     public Tokenizer(String txt) {
-        tokens = new LinkedList<>();
+        tkz = new LinkedList<>();
         String[] separated = SPLIT_PATTERN.split(txt);
         for (String s : separated) {
             if (!s.trim().isEmpty()) {
-                tokens.add(s);
+                tkz.add(s);
             }
         }
     }
 
     public String peek() throws SyntaxError {
-        if (tokens.isEmpty()) {
+        if (tkz.isEmpty()) {
             throw new SyntaxError("Empty");
         }
-        return tokens.element();
+        return tkz.element();
     }
 
     public boolean peek(String s) throws SyntaxError {
-        return !tokens.isEmpty() && tokens.element().equals(s);
+        return !tkz.isEmpty() && tkz.element().equals(s);
     }
 
     public String consume() {
-        return tokens.remove();
+        return tkz.remove();
     }
 
     public void consume(String s) throws SyntaxError {
@@ -40,7 +39,7 @@ public class Tokenizer {
     }
 
     public boolean hasNextToken() {
-        return tokens.isEmpty();
+        return tkz.isEmpty();
     }
 
     public static boolean isNumber(String s) {

@@ -25,17 +25,17 @@ public class InfoExp implements Statement {
     public long ev() throws SyntaxError {
         switch (command) {
             case "opponent":
-                return crew.getOpponent();
+                return crew.opponent();
             case "nearby":
-                return crew.nearBy(direction);
+                return crew.nearby(direction);
             default:
-                throw new SyntaxError("Invalid InfoExpr command: " + command);
+                throw new SyntaxError("Invalid InfoExp command: " + command);
         }
     }
 
     @Override
     public StringBuilder addCommand(StringBuilder sb) {
-        sb.append("InfoExpr ");
+        sb.append("InfoExp ");
         sb.append(command);
         if (direction != null) {
             sb.append(" ");

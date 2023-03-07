@@ -1,4 +1,3 @@
-import java.util.Map;
 
 public class Binary implements Statement {
     private Statement left;

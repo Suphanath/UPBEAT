@@ -1,33 +1,33 @@
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Plan {
-    private final LinkedList<Statement> listOfState = new LinkedList<>();
-    private Iterator<Statement> iterator = listOfState.iterator();
+    private final List<Statement> statements = new ArrayList<>();
+    private int currentIndex = 0;
 
-    protected void addState(Statement statement) {
-        listOfState.add(statement);
+    public void addStatement(Statement statement) {
+        statements.add(statement);
     }
 
-    public Statement nextState() {
-        return hasNext() ? iterator.next() : null;
+    public Statement getNextStatement() {
+        if (currentIndex >= statements.size()) {
+            return null;
+        }
+        Statement statement = statements.get(currentIndex++);
+        return statement;
     }
 
-    public boolean hasNext() {
-        return iterator.hasNext();
+    public void reset() {
+        currentIndex = 0;
     }
 
-    public void setIterator() {
-        iterator = listOfState.iterator();
-    }
-
-    public String evaluate() throws SyntaxError {
+    public String ev() throws SyntaxError {
         StringBuilder commandList = new StringBuilder();
-        setIterator();
-        while (hasNext()) {
-            Statement state = nextState();
-            state.ev();
-            commandList = state.addCommand(commandList);
+        reset();
+        Statement statement;
+        while ((statement = getNextStatement()) != null) {
+            statement.ev();
+            commandList = statement.addCommand(commandList);
         }
         return commandList.toString();
     }

@@ -1,4 +1,33 @@
 public class Player {
+    public int opponent() {
+        int minDistance = Integer.MAX_VALUE;
+        int opponentLocation = 0;
+        for (Direction direction : Direction.values()) {
+            Region neighbor = this.currentRegion.getNeighbor(direction);
+            if (neighbor != null && neighbor.belongsTo(opponent)) {
+                int distance = Math.abs(neighbor.getX() - this.currentRegion.getX())
+                        + Math.abs(neighbor.getY() - this.currentRegion.getY());
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    opponentLocation = (distance * 10) + direction.ordinal() + 1;
+                }
+            }
+        }
+        return opponentLocation;
+    }
+
+    public int nearby(Direction direction) {
+        Region neighbor = this.currentRegion.getNeighbor(direction);
+        if (neighbor == null || !neighbor.belongsTo(opponent)) {
+            return 0;
+        }
+        int distance = Math.abs(neighbor.getX() - this.currentRegion.getX())
+                + Math.abs(neighbor.getY() - this.currentRegion.getY());
+        int depositDigits = String.valueOf(neighbor.getDeposit()).length();
+        return (distance * 100) + depositDigits;
+    }
+}
+
     public void done() {
 //        this.isDone = true;
     }
