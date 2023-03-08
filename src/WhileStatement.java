@@ -1,5 +1,4 @@
 
-
 public class WhileStatement implements Statement {
     private  Statement expression;
     private  Statement trueStatement;

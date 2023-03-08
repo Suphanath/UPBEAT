@@ -1,34 +1,31 @@
-public class Player {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Player{
     private boolean isDone;
-    private static final int NORTH = 0;
-    private static final int EAST = 1;
-    private static final int SOUTH = 2;
-    private static final int WEST = 3;
-    private static final int NORTHEAST = 4;
-    private static final int SOUTHEAST = 5;
-    private static final int[] DIRECTIONS = {NORTH, EAST, SOUTH, WEST, NORTHEAST, SOUTHEAST};
     private Region currentRegion;
     private Player opponent;
     private int budget;
+    List<Region> allRegions = new ArrayList<>();
 
     public int opponent() {
         int minDistance = Integer.MAX_VALUE;
         int opponentLocation = 0;
-        for (int direction : DIRECTIONS) {
+        for (Direction direction : Direction.values()) {
             Region neighbor = getNeighbor(direction);
             if (neighbor != null && neighbor.belongsTo(opponent)) {
                 int distance = Math.abs(neighbor.getX() - this.currentRegion.getX())
                         + Math.abs(neighbor.getY() - this.currentRegion.getY());
                 if (distance < minDistance) {
                     minDistance = distance;
-                    opponentLocation = (distance * 10) + direction + 1;
+                    opponentLocation = (distance * 10) + direction.ordinal() + 1;
                 }
             }
         }
         return opponentLocation;
     }
 
-    public int nearby(int direction) {
+    public int nearby(Direction direction) {
         Region neighbor = getNeighbor(direction);
         if (neighbor == null || !neighbor.belongsTo(opponent)) {
             return 0;
@@ -39,43 +36,52 @@ public class Player {
         return (distance * 100) + depositDigits;
     }
 
-    public Region getNeighbor(int direction) {
-        int x = this.currentRegion.getX();
-        int y = this.currentRegion.getY();
-        switch (direction) {
-            case NORTH:
-                y--;
+    public Region getNeighbor(Direction direction) {
+        int neighborX = this.currentRegion.getX();
+        int neighborY = this.currentRegion.getY();
+        switch (direction.getName()) {
+            case "UP":
+                neighborY--;
                 break;
-            case EAST:
-                x++;
+            case "DOWN":
+                neighborY++;
                 break;
-            case SOUTH:
-                y++;
+            case "UPLEFT":
+                neighborX--;
+                neighborY--;
                 break;
-            case WEST:
-                x--;
+            case "UPRIGHT":
+                neighborX++;
+                neighborY--;
                 break;
-            case NORTHEAST:
-                x++;
-                y--;
+            case "DOWNLEFT":
+                neighborX--;
+                neighborY++;
                 break;
-            case SOUTHEAST:
-                x++;
-                y++;
+            case "DOWNRIGHT":
+                neighborX++;
+                neighborY++;
                 break;
             default:
-                return null;
+                throw new IllegalArgumentException("Invalid direction: " + direction);
         }
-        String key = x + "," + y;
-        if (!this.regions.containsKey(key)) {
-            return null; // Neighbor is not in the map
-        }
-        return this.regions.get(key);
+        return getRegion(neighborX, neighborY);
     }
 
+    public Region getRegion(int x, int y) {
+        // Implementation to retrieve a Region object with the specified x and y coordinates
+        // For example:
+        for (Region region : allRegions) {
+            if (region.getX() == x && region.getY() == y) {
+                return region;
+            }
+        }
+        return null; // if no Region with the specified coordinates is found
+    }
     public void done() {
         this.isDone = true;
     }
+
     public void relocate(Region targetRegion) {
         if (!targetRegion.belongsTo(this) || this.getBudget() < calculateRelocationCost(targetRegion)) {
             return;
@@ -84,10 +90,12 @@ public class Player {
         this.currentRegion = targetRegion;
         this.isDone = true;
     }
+
     private int calculateRelocationCost(Region targetRegion) {
         int x = Math.abs(this.currentRegion.getX() - targetRegion.getX()) + Math.abs(this.currentRegion.getY() - targetRegion.getY());
         return 5*x + 10;
     }
+
     public void move(Direction direction) {
         Region targetRegion = this.currentRegion.getNeighbor(direction);
         if (targetRegion == null || targetRegion.belongsTo(opponent)) {
@@ -98,6 +106,7 @@ public class Player {
         this.deductBudget(1);
         this.isDone = true;
     }
+
     public void invest(int investmentAmount) {
         if (this.getBudget() < investmentAmount + 1) {
             this.deductBudget(1);
@@ -109,6 +118,7 @@ public class Player {
         this.deductBudget(totalCost);
         this.isDone = true;
     }
+
     public void collect(int collectionAmount) {
         if (this.getBudget() < 1 || collectionAmount > this.currentRegion.getDeposit()) {
             this.deductBudget(1);
@@ -122,6 +132,7 @@ public class Player {
         this.deductBudget(1);
         this.isDone = true;
     }
+
     public void shoot(Direction direction, int expenditure) {
         Region targetRegion = this.currentRegion.getNeighbor(direction);
         if (targetRegion == null) {

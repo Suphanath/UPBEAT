@@ -1,3 +1,4 @@
+
 public class Region {
     private int x;
     private int y;
@@ -49,13 +50,22 @@ public class Region {
         return this.neighbors;
     }
 
-    public Region getNeighbor(int direction) {
-        return this.neighbors[direction];
+    public Region getNeighbor(Direction direction) {
+        if (direction == null) {
+            throw new IllegalArgumentException("Direction cannot be null.");
+        }
+        if (this.neighbors == null) {
+            return null;
+        }
+        Region neighbor = null;
+        try {
+            neighbor = this.neighbors[direction.ordinal()];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // handle invalid direction
+        }
+        return neighbor;
     }
 
-    public void setNeighbor(int direction, Region region) {
-        this.neighbors[direction] = region;
-    }
 
     public void addDeposit(int amount) {
         this.deposit += amount;
