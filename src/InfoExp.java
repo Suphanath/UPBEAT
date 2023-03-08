@@ -13,14 +13,6 @@ public class InfoExp implements Statement {
         this.crew = crew;
     }
 
-    public String getCommand() {
-        return command;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
     @Override
     public long ev() throws SyntaxError {
         switch (command) {

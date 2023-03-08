@@ -3,11 +3,10 @@ import java.util.NoSuchElementException;
 public class Tokenizing extends Tokenizer {
     private int current;
     private String next;
-    private final String src;
-    public Tokenizing(String src){
-        this.src = src;
-        current = 0;
-        computeNext();
+    private String src;
+
+    public Tokenizing(String txt) {
+        super(txt);
     }
 
     @Override
@@ -44,18 +43,17 @@ public class Tokenizing extends Tokenizer {
         throw new NoSuchElementException("there are no more tokens");
     }
 
-    private void Comment(){
+    private void comment(){
         while (current < src.length() && src.charAt(current)!='\n'){
             current++;
         }
     }
 
     private void computeNext() throws IllegalArgumentException{
-        StringBuilder s = new StringBuilder();
-
+        StringBuilder sb = new StringBuilder();
         while (current < src.length() && Character.isWhitespace(src.charAt(current))) {
             if(src.charAt(current)=='#'){
-                Comment();
+                comment();
             }else{
                 current++;
             }
@@ -66,22 +64,22 @@ public class Tokenizing extends Tokenizer {
         }
         char a = src.charAt(current);
         if(Character.isDigit(a)){
-            s.append(a);
+            sb.append(a);
             for(current++; current < src.length() && Character.isDigit(src.charAt(current)); current++) {
-                s.append(src.charAt(current));
+                sb.append(src.charAt(current));
             }
         }else if(a == '_') {
-            s.append(a);
+            sb.append(a);
             current++;
         }else if("()+-*/%^{}=".contains(String.valueOf(a))){
-            s.append(a);
+            sb.append(a);
             current++;
         }else if(Character.isAlphabetic(a)){
-            s.append(a);
+            sb.append(a);
             for(current++; current < src.length() && Character.isAlphabetic(src.charAt(current)); current++) {
-                s.append(src.charAt(current));
+                sb.append(src.charAt(current));
             }
         }else throw new IllegalArgumentException(a + "is an illegal character");
-        next = s.toString();
+        next = sb.toString();
     }
 }

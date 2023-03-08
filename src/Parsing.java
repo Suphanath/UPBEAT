@@ -29,12 +29,12 @@ public class Parsing{
     }
 
     private Statement ParseStatement() throws SyntaxError{
-        if (tkz.peek().equals("if")) {
+        if (tkz.peek().equals("{")) {
+            return ParseBlockStatement();
+        } else if (tkz.peek().equals("if")) {
             return ParseIfStatement();
         } else if (tkz.peek().equals("while")) {
             return ParseWhileStatement();
-        } else if (tkz.peek().equals("{")) {
-            return ParseBlockStatement();
         } else {
             return ParseCommand();
         }
@@ -51,10 +51,10 @@ public class Parsing{
     }
 
     private Statement ParseAssignmentStatement() {
-        Identifier identifier = ParseIdentifier();
+        Identifier idf = ParseIdentifier();
         tkz.consume("=");
         Statement expression = ParseExpression();
-        return new AssignStatement(identifier, "=", expression);
+        return new AssignStatement(idf, "=", expression);
     }
 
     private Identifier ParseIdentifier() {
@@ -91,7 +91,7 @@ public class Parsing{
             tkz.consume();
             return new ActionCommand("relocate");
         }else {
-            throw new SyntaxError("SyntaxError");
+            throw new SyntaxError("Syntax Error");
         }
     }
 

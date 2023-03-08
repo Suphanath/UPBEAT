@@ -1,10 +1,8 @@
 
 public class ActionCommand implements Statement {
-
     private String action;
     private Direction direction;
     private Statement expression;
-
     private Player crew;
 
     public ActionCommand(String action, Direction direction) {
@@ -25,19 +23,20 @@ public class ActionCommand implements Statement {
         if (action.equals("move")) {
             crew.move(direction);
         } else if (action.equals("shoot")) {
-            crew.shoot(direction);
+            crew.shoot(direction, 0);
         } else if (action.equals("invest")) {
-            crew.invest();
+            crew.invest(0);
         } else if (action.equals("collect")) {
-            crew.collect();
+            crew.collect(0);
         } else if (action.equals("done")) {
             crew.done();
         } else if (action.equals("relocate")) {
-            crew.relocate();
+            crew.relocate(null);
         } else {
             throw new SyntaxError("Unknown action: " + action);
         }
     }
+
 
 
     @Override
