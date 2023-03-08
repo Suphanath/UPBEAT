@@ -14,7 +14,7 @@ function Canvas() {
     if (!client) {
       color = "#" + Math.floor(Math.random() * 16777215).toString(16);
       client = new Client({
-        brokerURL: "ws://192.168.0.83:8080/demo-websocket",
+        brokerURL: "ws://localhost:8080/demo-websocket",
         onConnect: () => {
         client.subscribe("/app/canvas", (message) => {
           const body = JSON.parse(message.body);
@@ -48,6 +48,7 @@ function Canvas() {
 
   return (
     <div>
+      <h1>UPBEAT</h1>
       <table
         style={{
           borderCollapse: "collapse",

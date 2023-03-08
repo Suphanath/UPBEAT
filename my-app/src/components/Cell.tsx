@@ -1,4 +1,5 @@
 import React from "react";
+import './hexagon.css';
 
 export type CellProps = {
   x: number;
@@ -9,18 +10,31 @@ export type CellProps = {
 
 const Cell = ({ x, y, color, paint }: CellProps) => {
   return (
-    <td
+    <div className="honeycomb"
       draggable='true'
-      style={{
-        backgroundColor: color,
-        width: "1.5rem",
-        height: "1.5rem",
-        cursor: "pointer",
-        border: "1px solid"
-      }}
       onClick={() => paint(x, y)}
       onDragEnter={() => paint(x, y)}
-    ></td>
+    > <div>
+        <div className="ibws-fix">
+          <div className="hexagon">
+          </div>
+          <div className="hexagon">
+          </div>
+          <div className="hexagon">
+          </div>
+          <div className="hexagon">
+          </div>
+          <div className="hexagon">
+          </div>
+          <div className="hexagon">
+          </div>
+          <div className="hexagon">
+          </div>
+          <div className="hexagon">
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
