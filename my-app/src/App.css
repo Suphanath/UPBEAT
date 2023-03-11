@@ -1,7 +1,7 @@
 .App {
-  font-family: sans-serif;
+  font-family: 'Alatsi',sans-serif;
   text-align: center;
-  background-color: #000000;
+  color: white;
 }
 
 
@@ -30,5 +30,4 @@
 .App-link {
   color: #61dafb;
 }
-
 

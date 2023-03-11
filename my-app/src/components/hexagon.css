@@ -13,20 +13,21 @@ html {
 }
 body {
   color: hsl(0, 0%, 10%);
-  background-image: url("Giga.jpg");
-  background-color: hsl(0, 0%, 95%);
+  background-color: hsl(231, 21%, 12%);
   max-width: 920px;
   margin: 0 auto;
   padding: 30px;
   bottom: 0;
   top: 0;
+  opacity:0.90
+  
 }
 .hexagon {
   position: relative;
   display: inline-block;
   /* left/right margin approx. 25% of .hexagon width + spacing */
   margin: 1px 18px;
-  background-color: hsl(220, 100%, 50%);
+  background-color: hsl(0, 0%, 100%);
   text-align: center;
 }
 .hexagon,
@@ -58,12 +59,12 @@ body {
   top: 59px;
 }
 .hexagon:hover {
-  background-color: rgb(255, 136, 0);
+  background-color: rgb(201,169,132);
   cursor: pointer;
   z-index: 105;
 }
 .hexagon:active {
-  background-color: rgb(255, 174, 0);
+  background-color: rgb(255, 234, 203);
   z-index: 110;
 }
 .hexanone {
@@ -94,3 +95,11 @@ body {
   margin: 0 auto;
   text-align: center;
 }
+
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+
