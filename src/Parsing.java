@@ -21,12 +21,13 @@ public class Parsing{
     }
 
     private Plan ParsePlan() throws SyntaxError{
-        Plan plan = new Plan();
+        List<Statement> statements = new ArrayList<>();
         while (tkz.hasNextToken()){
-            plan.addStatement(ParseStatement());
+            statements.add(ParseStatement());
         }
-        return plan;
+        return new Plan(statements);
     }
+
 
     private Statement ParseStatement() throws SyntaxError{
         if (tkz.peek().equals("{")) {

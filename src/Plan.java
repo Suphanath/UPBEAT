@@ -2,12 +2,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Plan {
-    private final List<Statement> statements = new ArrayList<>();
+    private final List<Statement> statements;
+
+    // Constructor that takes a List<Statement>
+    public Plan(List<Statement> statements) {
+        this.statements = statements;
+    }
+
     private int currentIndex = 0;
 
-    public void addStatement(Statement statement) {
-        statements.add(statement);
-    }
+
+//    public void addStatement(Statement statement) {
+//        statements.add(statement);
+//    }
+
 
     public Statement getNextStatement() {
         if (currentIndex >= statements.size()) {
@@ -32,3 +40,4 @@ public class Plan {
         return commandList.toString();
     }
 }
+
