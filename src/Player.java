@@ -113,25 +113,25 @@ public class Player{
             return;
         }
         int totalCost = investmentAmount + 1;
-        int depositToAdd = Math.min(investmentAmount, this.currentRegion.getMaxDeposit() - this.currentRegion.getDeposit());
+        int depositToAdd = (int) Math.min(investmentAmount, this.currentRegion.getMaxDeposit() - this.currentRegion.getDeposit());
         this.currentRegion.addDeposit(depositToAdd);
         this.deductBudget(totalCost);
         this.isDone = true;
     }
 
-    public void collect(int collectionAmount) {
-        if (this.getBudget() < 1 || collectionAmount > this.currentRegion.getDeposit()) {
-            this.deductBudget(1);
-            return;
-        }
-        this.addBudget(collectionAmount);
-        this.currentRegion.deductDeposit(collectionAmount);
-        if (this.currentRegion.getDeposit() == 0) {
-            this.currentRegion.setOwner(null);
-        }
-        this.deductBudget(1);
-        this.isDone = true;
-    }
+//    public void collect(int collectionAmount) {
+//        if (this.getBudget() < 1 || collectionAmount > this.currentRegion.getDeposit()) {
+//            this.deductBudget(1);
+//            return;
+//        }
+//        this.addBudget(collectionAmount);
+//        this.currentRegion.deductDeposit(collectionAmount);
+//        if (this.currentRegion.getDeposit() == 0) {
+//            this.currentRegion.setOwner(null);
+//        }
+//        this.deductBudget(1);
+//        this.isDone = true;
+//    }
 
     public void shoot(Direction direction, int expenditure) {
         Region targetRegion = this.currentRegion.getNeighbor(direction);
@@ -174,10 +174,25 @@ public class Player{
         if (region == null) {
             return;
         }
-        int damage = Math.min(region.getDeposit(), expenditure);
+        int damage = (int) Math.min(region.getDeposit(), expenditure);
         region.deductDeposit(damage);
         if (region.getDeposit() == 0) {
             region.setOwner(null);
         }
+    }
+
+    public void collect(int collectionAmount, double baseRate, int turnCount) {
+        if (this.getBudget() < 1 || collectionAmount > this.currentRegion.getDeposit()) {
+            this.deductBudget(1);
+            return;
+        }
+        double interest = this.currentRegion.calculateInterest(baseRate, turnCount);
+        this.addBudget((int) (collectionAmount + interest));
+        this.currentRegion.deductDeposit(collectionAmount);
+        if (this.currentRegion.getDeposit() == 0) {
+            this.currentRegion.setOwner(null);
+        }
+        this.deductBudget(1);
+        this.isDone = true;
     }
 }

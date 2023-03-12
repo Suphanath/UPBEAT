@@ -27,7 +27,7 @@ public class ActionCommand implements Statement {
         } else if (action.equals("invest")) {
             crew.invest(0);
         } else if (action.equals("collect")) {
-            crew.collect(0);
+            crew.collect(0,0,0);
         } else if (action.equals("done")) {
             crew.done();
         } else if (action.equals("relocate")) {
@@ -36,8 +36,6 @@ public class ActionCommand implements Statement {
             throw new SyntaxError("Unknown action: " + action);
         }
     }
-
-
 
     @Override
     public long ev() throws SyntaxError {

@@ -1,12 +1,13 @@
+import java.lang.Math;
 
 public class Region {
     private int x;
     private int y;
-    private int deposit;
+    private double deposit;
     private Player owner;
     private Region[] neighbors;
 
-    public Region(int x, int y, int deposit) {
+    public Region(int x, int y, double deposit) {
         this.x = x;
         this.y = y;
         this.deposit = deposit;
@@ -14,6 +15,7 @@ public class Region {
         this.neighbors = new Region[6];
     }
 
+    // getter and setter methods
     public int getX() {
         return this.x;
     }
@@ -22,11 +24,11 @@ public class Region {
         return this.y;
     }
 
-    public int getDeposit() {
+    public double getDeposit() {
         return this.deposit;
     }
 
-    public void setDeposit(int deposit) {
+    public void setDeposit(double deposit) {
         this.deposit = deposit;
     }
 
@@ -66,12 +68,20 @@ public class Region {
         return neighbor;
     }
 
-
-    public void addDeposit(int amount) {
+    // utility methods
+    public void addDeposit(double amount) {
         this.deposit += amount;
     }
 
-    public void deductDeposit(int amount) {
+    public void deductDeposit(double amount) {
         this.deposit -= amount;
+    }
+
+    // method for calculating interest for the current turn
+    public double calculateInterest(double baseRate, int turnCount) {
+        double rate = baseRate * Math.log10(this.deposit) * Math.log(turnCount);
+        double interest = this.deposit * rate / 100;
+        this.deposit += interest;
+        return this.deposit;
     }
 }

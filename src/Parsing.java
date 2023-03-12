@@ -12,7 +12,6 @@ public class Parsing{
             "collect", "done", "down", "downleft", "downright", "else", "if", "invest", "move",
             "nearby", "opponent", "relocate", "shoot", "then", "up", "upleft", "upright", "while"));
 
-
     public String parse(String txt,Player crew) throws SyntaxError {
         this.tkz = new Tokenizer(txt);
         plans = ParsePlan();
