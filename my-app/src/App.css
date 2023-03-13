@@ -1,7 +1,8 @@
 .App {
-  font-family: 'Alatsi',sans-serif;
+  font-family: 'Geostar Fill', cursive;
   text-align: center;
   color: white;
+  @import url(https://fonts.googleapis.com/css2?family=Geostar+Fill&display=swap); 
 }
 
 
@@ -31,3 +32,22 @@
   color: #61dafb;
 }
 
+/* unvisited link */
+a:link {
+  color: red;
+}
+
+/* visited link */
+a:visited {
+  color: green;
+}
+
+/* mouse over link */
+a:hover {
+  color: hotpink;
+}
+
+/* selected link */
+a:active {
+  color: blue;
+}
