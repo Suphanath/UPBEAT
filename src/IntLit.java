@@ -1,18 +1,22 @@
 import java.util.Map;
 public class IntLit implements Statement{
-    private final long val;
+    private long val;
     public IntLit(long val){
         this.val = val;
     }
 
+    public long eval(){
+        return val;
+    }
+
     @Override
     public long ev() throws SyntaxError {
-        return 0;
+        return val;
     }
 
     @Override
-    public StringBuilder addCommand(StringBuilder s) {
-        return null;
+    public StringBuilder addCommand(StringBuilder sb) {
+        sb.append("IntLit ");
+        return sb;
     }
-
 }

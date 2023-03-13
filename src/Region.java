@@ -1,36 +1,45 @@
 import java.lang.Math;
 
 public class Region {
-    private int x;
-    private int y;
-    private double deposit;
+    private long deposit;
+    private double interest;
+    private double maxdeposit;
+    private int rows;
+    private int cols;
     private Player owner;
     private Region[] neighbors;
+    private boolean isCityCenter;
 
-    public Region(int x, int y, double deposit) {
-        this.x = x;
-        this.y = y;
-        this.deposit = deposit;
+    public Region(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+        this.deposit = Configs.conf().start_deposit;
+        this.interest = Configs.conf().start_deposit;
         this.owner = null;
-        this.neighbors = new Region[6];
     }
 
     // getter and setter methods
-    public int getX() {
-        return this.x;
+    public int getRow() {
+        return this.rows;
     }
 
-    public int getY() {
-        return this.y;
+    public int getCol() {
+        return this.cols;
+    }
+
+    public void setCityCenterDeposit(int amount) {
+        this.deposit = amount;
+    }
+
+    public void setCityCenter(boolean isCityCenter) {
+        this.isCityCenter = isCityCenter;
     }
 
     public double getDeposit() {
         return this.deposit;
     }
 
-    public void setDeposit(double deposit) {
-        this.deposit = deposit;
-    }
+    public double getInterest() {return this.interest;}
 
     public Player getOwner() {
         return this.owner;
@@ -45,29 +54,12 @@ public class Region {
     }
 
     public int getMaxDeposit() {
-        return (this.x + this.y) * 10;
+        return (this.rows + this.cols) * 10;
     }
 
-    public Region[] getNeighbors() {
-        return this.neighbors;
+    public boolean isCityCenter() {
+        return this.isCityCenter;
     }
-
-    public Region getNeighbor(Direction direction) {
-        if (direction == null) {
-            throw new IllegalArgumentException("Direction cannot be null.");
-        }
-        if (this.neighbors == null) {
-            return null;
-        }
-        Region neighbor = null;
-        try {
-            neighbor = this.neighbors[direction.ordinal()];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // handle invalid direction
-        }
-        return neighbor;
-    }
-
     // utility methods
     public void addDeposit(double amount) {
         this.deposit += amount;
@@ -78,10 +70,69 @@ public class Region {
     }
 
     // method for calculating interest for the current turn
-    public double calculateInterest(double baseRate, int turnCount) {
-        double rate = baseRate * Math.log10(this.deposit) * Math.log(turnCount);
-        double interest = this.deposit * rate / 100;
-        this.deposit += interest;
-        return this.deposit;
+    public void calculateInterest(int turnCount) {
+        if(turnCount == 1){
+            this.interest = Configs.conf().interest_pct;
+        } else {
+            this.interest = Configs.conf().interest_pct * Math.log10(this.deposit) * Math.log(turnCount);
+        }
+    }
+    public void calculateDeposit() {
+        this.deposit += this.deposit * this.interest / 100;
+    }
+    public void calculateInvest(long amount, Player crew) {
+        long maxDeposit = Configs.conf().max_dep;
+        long newDeposit = deposit + amount;
+        if (newDeposit > maxDeposit) {
+            deposit = maxDeposit;
+        } else {
+            deposit = newDeposit;
+        }
+        if (owner == null) {
+            setOwner(crew);
+            owner.addRegion(this);
+        }
+    }
+    public void receiveAttack(long expenditure) {
+        if (this.owner == null) {
+            return;
+        }
+        this.deposit -= expenditure;
+        if (this.deposit <= 0) {
+            this.deposit = 0;
+            this.interest = Configs.conf().interest_pct;
+            if (!isCityCenter) {
+                owner.removeRegion(this);
+                this.setOwner(null);
+            }
+        }
+    }
+
+    public long collectDeposit(long expenditure) {
+        System.out.println("Current deposit: " + deposit);
+        long collectedAmount = 0;
+        if (deposit >= expenditure) {
+            deposit -= expenditure;
+            collectedAmount = expenditure;
+        } else {
+            collectedAmount = deposit;
+            deposit = 0;
+        }
+        if (deposit == 0) {
+            interest = Configs.conf().interest_pct;
+            if (owner != null) {
+                owner.removeRegion(this);
+                setOwner(null);
+            }
+        }
+        return collectedAmount;
+    }
+
+    public void regionInfo() {
+        System.out.println("(" + rows + "," + cols + ")");
+        System.out.println("Deposit: " + this.deposit);
+        System.out.println("Owner: " + this.owner);
+        System.out.println("Citycenter: " + (isCityCenter ? this.owner : "no"));
+        System.out.println(" ");
     }
 }

@@ -5,29 +5,39 @@ public class ActionCommand implements Statement {
     private Statement expression;
     private Player crew;
 
-    public ActionCommand(String action, Direction direction) {
+    public ActionCommand(String action, Direction direction, Player crew) {
         this.action = action;
         this.direction = direction;
+        this.crew = crew;
     }
 
-    public ActionCommand(String action, Statement expression) {
+    public ActionCommand(String action, Statement expression, Player crew) {
         this.action = action;
         this.expression = expression;
+        this.crew = crew;
     }
 
-    public ActionCommand(String action) {
+    public ActionCommand(String action, Direction direction, Statement expression, Player crew) {
         this.action = action;
+        this.expression = expression;
+        this.direction = direction;
+        this.crew = crew;
     }
 
-    public void execute() throws SyntaxError {
+    public ActionCommand(String action,Player crew) {
+        this.action = action;
+        this.crew = crew;
+    }
+
+    public long ev() throws SyntaxError {
         if (action.equals("move")) {
             crew.move(direction);
         } else if (action.equals("shoot")) {
-            crew.shoot(direction, 0);
+            crew.shoot(direction, expression.ev());
         } else if (action.equals("invest")) {
-            crew.invest(0);
+            crew.invest(expression.ev());
         } else if (action.equals("collect")) {
-            crew.collect(0,0,0);
+            crew.collect((int) expression.ev());
         } else if (action.equals("done")) {
             crew.done();
         } else if (action.equals("relocate")) {
@@ -35,17 +45,12 @@ public class ActionCommand implements Statement {
         } else {
             throw new SyntaxError("Unknown action: " + action);
         }
-    }
-
-    @Override
-    public long ev() throws SyntaxError {
-        execute();
         return 0;
     }
 
     @Override
     public StringBuilder addCommand(StringBuilder sb) {
-        sb.append("ActionStatement ");
+        sb.append("ActionStatement " + direction);
         return sb;
     }
 }

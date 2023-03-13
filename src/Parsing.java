@@ -8,6 +8,7 @@ public class Parsing{
     }
     private Plan plans;
     Player crew;
+    Variables var = new Variables();
     private static final Set<String> words = new HashSet<>(Arrays.asList(
             "collect", "done", "down", "downleft", "downright", "else", "if", "invest", "move",
             "nearby", "opponent", "relocate", "shoot", "then", "up", "upleft", "upright", "while"));
@@ -20,7 +21,7 @@ public class Parsing{
     }
 
     private Plan ParsePlan() throws SyntaxError{
-        List<Statement> statements = new ArrayList<>();
+        List<Statement> statements = new LinkedList<>();
         while (tkz.hasNextToken()){
             statements.add(ParseStatement());
         }
@@ -60,14 +61,14 @@ public class Parsing{
     private Identifier ParseIdentifier() {
         if (words.contains(tkz.peek())) {
             tkz.consume();
-            throw new SyntaxError("Error");
+            throw new SyntaxError("SyntaxError");
         }
         if (!tkz.isNumber("" + tkz.peek().charAt(0))) {
             if (tkz.peek().substring(1).chars().allMatch(Character::isLetterOrDigit)) {
-                return new Identifier(tkz.consume());
+                return new Identifier(tkz.consume(),var);
             }
         }
-        throw new SyntaxError("Error");
+        throw new SyntaxError("SyntaxError");
     }
 
     private Statement ParseActionCommand() {
@@ -89,16 +90,16 @@ public class Parsing{
     private Statement ParseRelocateCommand() {
         if (tkz.peek("relocate")) {
             tkz.consume();
-            return new ActionCommand("relocate");
+            return new ActionCommand("relocate",crew);
         }else {
-            throw new SyntaxError("Syntax Error");
+            throw new SyntaxError("SyntaxError");
         }
     }
 
     private Statement ParseDoneCommand() {
         if (tkz.peek("done")) {
             tkz.consume();
-            return new ActionCommand("done");
+            return new ActionCommand("done",crew);
         }else {
             throw new SyntaxError("SyntaxError");
         }
@@ -107,10 +108,10 @@ public class Parsing{
     private Statement ParseRegionCommand() {
         if (tkz.peek("invest")) {
             tkz.consume();
-            return new ActionCommand("invest", ParseExpression());
+            return new ActionCommand("invest", ParseExpression(),crew);
         } else if (tkz.peek("collect")) {
             tkz .consume();
-            return new ActionCommand("collect", ParseExpression());
+            return new ActionCommand("collect", ParseExpression(),crew);
         }else {
             throw new SyntaxError("SyntaxError");
         }
@@ -145,7 +146,7 @@ public class Parsing{
                 tkz.consume();
                 factor = new Binary(factor, ParseFactor(), "%");
             } else {
-                throw new SyntaxError("Error");
+                throw new SyntaxError("SyntaxError");
             }
         }
         return factor;
@@ -192,7 +193,7 @@ public class Parsing{
     private Statement ParseAttackCommand() {
         if (tkz.peek("shoot")) {
             tkz.consume();
-            return new ActionCommand("shoot", ParseDirection());
+            return new ActionCommand("shoot", ParseDirection(),crew);
         }else {
             throw new SyntaxError("SyntaxError");
         }
@@ -204,14 +205,14 @@ public class Parsing{
         if (direction != null) {
             return direction;
         } else {
-            throw new SyntaxError("Error");
+            throw new SyntaxError("SyntaxError");
         }
     }
 
     private Statement ParseMoveCommand() {
         if (tkz.peek("move")) {
             tkz.consume();
-            return new ActionCommand("move", ParseDirection());
+            return new ActionCommand("move", ParseDirection(),crew);
         }else {
             throw new SyntaxError("SyntaxError");
         }

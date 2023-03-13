@@ -1,12 +1,10 @@
 
 public class IfStatement implements Statement{
-    private Statement expression;
-    private Statement trueState;
-    private Statement falseState;
+    private Statement trueState, falseState, expression;
 
     public IfStatement(Statement expression, Statement trueState, Statement falseState) {
-        this.trueState = trueState;
         this.expression = expression;
+        this.trueState = trueState;
         this.falseState = falseState;
     }
 
@@ -33,7 +31,7 @@ public class IfStatement implements Statement{
     }
 
     @Override
-    public StringBuilder addCommand(StringBuilder s) {
-        s.append("Ifstatement ");
-        return  s;}
+    public StringBuilder addCommand(StringBuilder sb) {
+        sb.append("Ifstatement ");
+        return sb;}
 }

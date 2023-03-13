@@ -13,6 +13,8 @@ public class Binary implements Statement {
     public String operator() {
         return operator;
     }
+    public Statement left() {return left;}
+    public Statement right() {return right;}
 
     @Override
     public long ev() throws ArithmeticException{
@@ -31,7 +33,7 @@ public class Binary implements Statement {
         } else if (operator.equals("%")) {
             result = le % re;
         } else if (operator.equals("^")) {
-            result = (int) Math.pow(le, re);
+            result = (long) Math.pow(le, re);
         } else {
             throw new SyntaxError("Error");
         }

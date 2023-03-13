@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Plan {
-    private final List<Statement> statements;
+    private List<Statement> statements;
 
     // Constructor that takes a List<Statement>
     public Plan(List<Statement> statements) {
@@ -30,14 +31,14 @@ public class Plan {
     }
 
     public String ev() throws SyntaxError {
-        StringBuilder commandList = new StringBuilder();
+        StringBuilder commands = new StringBuilder();
         reset();
         Statement statement;
         while ((statement = getNextStatement()) != null) {
             statement.ev();
-            commandList = statement.addCommand(commandList);
+            commands = statement.addCommand(commands);
         }
-        return commandList.toString();
+        return commands.toString();
     }
 }
 

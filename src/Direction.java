@@ -1,32 +1,33 @@
 import java.util.HashMap;
+import java.util.Map;
 
-public class Direction {
-    public static final Direction UP = new Direction("UP");
-    public static final Direction DOWN = new Direction("DOWN");
-    public static final Direction UPLEFT = new Direction("UPLEFT");
-    public static final Direction UPRIGHT = new Direction("UPRIGHT");
-    public static final Direction DOWNLEFT = new Direction("DOWNLEFT");
-    public static final Direction DOWNRIGHT = new Direction("DOWNRIGHT");
+public enum Direction {
+    UP("UP"),
+    DOWN("DOWN"),
+    UPLEFT("UPLEFT"),
+    UPRIGHT("UPRIGHT"),
+    DOWNLEFT("DOWNLEFT"),
+    DOWNRIGHT("DOWNRIGHT");
 
-    private String name;
+    private static final Map<String, Direction> DIRECTION_MAP = new HashMap<>();
+    private final String name;
 
-    private Direction(String name) {
+    static {
+        for (Direction direction : Direction.values()) {
+            DIRECTION_MAP.put(direction.name, direction);
+        }
+    }
+
+    Direction(String name) {
         this.name = name;
     }
 
     public String getName() {
         return name;
     }
-    public static int ordinal() {
-        return Direction.ordinal();
-    }
-    public static Direction[] values() {
-        return Direction.values();
-    }
-
-    private static final HashMap<Object, Object> DIRECTION_MAP = new HashMap<>();
 
     public static Direction getDirection(String direction) {
-        return (Direction) DIRECTION_MAP.getOrDefault(direction, null);
+        return DIRECTION_MAP.getOrDefault(direction, null);
     }
 }
+

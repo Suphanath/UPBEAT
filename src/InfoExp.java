@@ -4,7 +4,8 @@ public class InfoExp implements Statement {
     private Player crew;
 
     public InfoExp(String command, Player crew) {
-        this(command, null, crew);
+        this.command = command;
+        this.crew = crew;
     }
 
     public InfoExp(String command, Direction direction, Player crew) {
@@ -28,13 +29,13 @@ public class InfoExp implements Statement {
     @Override
     public StringBuilder addCommand(StringBuilder sb) {
         sb.append("InfoExp ");
-        sb.append(command);
-        if (direction != null) {
-            sb.append(" ");
-            sb.append(direction.toString().toLowerCase());
-        }
-        sb.append(" ");
-        sb.append(crew.toString());
+//        sb.append(command);
+//        if (direction != null) {
+//            sb.append(" ");
+//            sb.append(direction.toString().toLowerCase());
+//        }
+//        sb.append(" ");
+//        sb.append(crew.toString());
         return sb;
     }
 }
