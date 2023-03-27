@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+const Main = () => {
+    return(
+        <div>
+           <ul style={{ display: 'flex',textAlign: 'center', justifyContent: 'center', margin: 200 , fontSize: 35}}>
+            <a href="/player" style={{textAlign: 'center',textDecoration: 'none', color: 'white',fontFamily: 'Geostar Fill'}}>Play</a>
+        </ul>
+        <ul style={{textAlign: 'center', display: 'flex', justifyContent: 'center', margin: 100 , fontSize: 35}}>
+            <a href="/how-to-play" style={{textAlign: 'center',textDecoration: 'none', color: 'white',fontFamily: 'Geostar Fill'}}>How to play</a>
+        </ul>  
+        </div>
+    );
+}
+=======
 import React from 'react';
 import './App.css';
 
@@ -46,5 +60,6 @@ const link = document.createElement('link');
   link.href = 'https://fonts.googleapis.com/css2?family=Geostar+Fill&display=swap';
   link.rel = 'stylesheet';
   document.head.appendChild(link);
+>>>>>>> 34152546876a39705e90fe5fb13f432cb57b3aa9
 
 export default Main;

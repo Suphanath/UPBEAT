@@ -31,4 +31,7 @@ function Hexagon() {
 }
 
 export default Hexagon;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 34152546876a39705e90fe5fb13f432cb57b3aa9

@@ -1,8 +1,9 @@
-import React from 'react';
 import './App.css';
 import './components/hexagon.css';
-import Play from './Play';
 import Main from './Main';
+import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import Player from './Player';
+import Play from './Play';
 
 function App() {
   const headingStyle = {
@@ -14,15 +15,22 @@ function App() {
     margin: 100,
   };
   return (
-    <div>
-       <h1 style={headingStyle}>UPBEAT</h1>
-        <ul style={{ display: 'flex',textAlign: 'center', justifyContent: 'center', margin: 200 , fontSize: 35}}>
-            <a href="/play" style={{textAlign: 'center',textDecoration: 'none', color: 'white',fontFamily: 'Geostar Fill'}}>Play</a>
-        </ul>
-        <ul style={{textAlign: 'center', display: 'flex', justifyContent: 'center', margin: 100 , fontSize: 35}}>
-            <a href="/how-to-play" style={{textAlign: 'center',textDecoration: 'none', color: 'white',fontFamily: 'Geostar Fill'}}>How to play</a>
-        </ul> 
-    </div>
+    <Router>
+      <div>
+        <h1 style={headingStyle}>UPBEAT</h1>
+        <Switch>
+          <Route exact path="/"> 
+            <Main/>
+          </Route>
+          <Route path="/player"> 
+            <Player/>
+          </Route>
+          <Route path="/play"> 
+            <Play/>
+          </Route>
+        </Switch>  
+      </div>
+    </Router>
   );
 }
 
