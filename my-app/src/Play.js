@@ -2,11 +2,7 @@ import React from 'react';
 import './Play.css';
 import Hexagon from "./components/Hexagon";
 
-<<<<<<< HEAD
 const Play = () => {
-=======
-function Play() {
->>>>>>> 34152546876a39705e90fe5fb13f432cb57b3aa9
   const board = [];
   // generate rows
   for (let i = 0; i < 8; i++) {
@@ -57,10 +53,6 @@ function Play() {
 
   return (
     <div>
-<<<<<<< HEAD
-=======
-      <h1 style={headingStyle}>UPBEAT</h1>
->>>>>>> 34152546876a39705e90fe5fb13f432cb57b3aa9
       <div style={containerStyle}>
         <div style={boardContainerStyle}>
           {board}
@@ -70,16 +62,12 @@ function Play() {
             <textarea type="text" style={textAreaStyle}/>
           </label>
           <button style={buttonStyle}>Submit</button>
-<<<<<<< HEAD
           <a href="/">Go to main (for dev)</a>
-=======
->>>>>>> 34152546876a39705e90fe5fb13f432cb57b3aa9
         </div>
       </div>
     </div>
   );
 }
-<<<<<<< HEAD
 
 const link = document.createElement('link');
 link.href = 'https://fonts.googleapis.com/css2?family=Geostar+Fill&display=swap';
@@ -87,11 +75,3 @@ link.rel = 'stylesheet';
 document.head.appendChild(link);
 
 export default Play;
-=======
-const link = document.createElement('link');
-  link.href = 'https://fonts.googleapis.com/css2?family=Geostar+Fill&display=swap';
-  link.rel = 'stylesheet';
-  document.head.appendChild(link);
-
-export default Play;
->>>>>>> 34152546876a39705e90fe5fb13f432cb57b3aa9
