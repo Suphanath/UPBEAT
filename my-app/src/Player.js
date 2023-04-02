@@ -14,16 +14,18 @@ const Player = () => {
     color: '#BBFF85',
     fontFamily: 'Geostar Fill',
   });
-  const [player3Style, setPlayer3Style] = useState({
-    textDecoration: 'none',
-    color: '#BBFF85',
-    fontFamily: 'Geostar Fill',
-  });
-  const [player4Style, setPlayer4Style] = useState({
-    textDecoration: 'none',
-    color: '#BBFF85',
-    fontFamily: 'Geostar Fill',
-  });
+  // const [player3Style, setPlayer3Style] = useState({
+  //   textDecoration: 'none',
+  //   color: '#BBFF85',
+  //   fontFamily: 'Geostar Fill',
+  // });
+  // const [player4Style, setPlayer4Style] = useState({
+  //   textDecoration: 'none',
+  //   color: '#BBFF85',
+  //   fontFamily: 'Geostar Fill',
+  // });
+
+  const [canStart, setCanStart] = useState(false);
 
   const handlePlayerClick = (player) => {
     switch (player) {
@@ -41,22 +43,28 @@ const Player = () => {
           fontFamily: 'Geostar Fill',
         });
         break;
-      case 'player3':
-        setPlayer3Style({
-          textDecoration: 'underline',
-          color: '#A9A9A9',
-          fontFamily: 'Geostar Fill',
-        });
-        break;
-      case 'player4':
-        setPlayer4Style({
-          textDecoration: 'underline',
-          color: '#A9A9A9',
-          fontFamily: 'Geostar Fill',
-        });
-        break;
+      // case 'player3':
+      //   setPlayer3Style({
+      //     textDecoration: 'underline',
+      //     color: '#A9A9A9',
+      //     fontFamily: 'Geostar Fill',
+      //   });
+      //   break;
+      // case 'player4':
+      //   setPlayer4Style({
+      //     textDecoration: 'underline',
+      //     color: '#A9A9A9',
+      //     fontFamily: 'Geostar Fill',
+      //   });
+      //   break;
       default:
         break;
+    }
+
+    if (player1Style.textDecoration === 'underline' && player2Style.textDecoration === 'underline') {
+      setCanStart(true);
+    } else {
+      setCanStart(false);
     }
   };
 
@@ -69,38 +77,44 @@ const Player = () => {
     margin: 100,
   };
 
+
+
   return (
     <div>
-        <ul style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
-          <li style={{ margin: '0 10px' }}>
-            <a  style={player1Style} onClick={() => handlePlayerClick('player1')}>Player1</a>
-          </li>
-        </ul>
-        <ul style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
-          <li style={{ margin: '0 10px' }}>
-            <a  style={player2Style} onClick={() => handlePlayerClick('player2')}>Player2</a>
-          </li>
-        </ul>
-        <ul style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
+        <div style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
+          <div style={{ margin: '0 10px' }}>
+            <a  style={player1Style} onClick={() => handlePlayerClick('player1')}>Player 1</a>
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
+          <div style={{ margin: '0 10px' }}>
+            <a  style={player2Style} onClick={() => handlePlayerClick('player2')}>Player 2</a>
+          </div>
+        </div>
+        {/* <div style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
           <li style={{ margin: '0 10px' }}>
             <a  style={player3Style} onClick={() => handlePlayerClick('player3')}>Player3</a>
           </li>
-        </ul>
-        <ul style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', margin: 15 , fontSize: 35}}>
           <li style={{ margin: '0 10px' }}>
             <a  style={player4Style} onClick={() => handlePlayerClick('player4')}>Player4</a>
           </li>
-        </ul>
-        <ul style={{ display: 'flex', justifyContent: 'center', margin: 100 , fontSize: 35}}>
-          <li style={{ margin: '0 10px' }}>
-            <Link to="/play" style={{textDecoration: 'none', color: '#FFE600',fontFamily: 'Geostar Fill'}}>Start!</Link>
-          </li>
-        </ul> 
-        <ul style={{ display: 'flex', justifyContent: 'center', margin: 100 , fontSize: 35}}>
-          <li style={{ margin: '0 10px' }}>
+        </div> */}
+        <div style={{ display: 'flex', justifyContent: 'center', margin: 100 , fontSize: 35}}>
+          <div style={{ margin: '0 10px' }}>
+          {canStart ? (
+            <Link to="/play" style={{ textDecoration: 'none', color: '#FFE600', fontFamily: 'Geostar Fill' }}>Start!</Link>
+          ) : (
+            <span style={{ color: 'gray', textDecoration: 'line-through', fontFamily: 'Geostar Fill' }}>Start!</span>
+          )}
+          </div>
+        </div> 
+        <div style={{ display: 'flex', justifyContent: 'center', margin: 100 , fontSize: 35}}>
+          <div style={{ margin: '0 10px' }}>
             <Link to="/" style={{textDecoration: 'none', color: 'red',fontFamily: 'Geostar Fill'}}>Back to menu</Link>
-          </li>
-        </ul> 
+          </div>
+        </div> 
     </div>
   );
 }

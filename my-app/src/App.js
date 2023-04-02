@@ -4,6 +4,7 @@ import Main from './Main';
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Player from './Player';
 import Play from './Play';
+import Howtoplay from './Howtoplay';
 
 function App() {
   const headingStyle = {
@@ -27,6 +28,9 @@ function App() {
           </Route>
           <Route path="/play"> 
             <Play/>
+          </Route>
+          <Route path="/howtoplay"> 
+            <Howtoplay/>
           </Route>
         </Switch>  
       </div>
