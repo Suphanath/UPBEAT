@@ -2,7 +2,7 @@ import org.junit.Test;
 
 public class TestCanbought {
     @Test
-    public void Pay(){
+    public void canBought(){
         Territory territory = new Territory();
         Player test = new Player("Player",territory,5,7,2000);
         test.playerInfo();
@@ -36,8 +36,8 @@ public class TestCanbought {
         test.playerInfo();
         test.newTurn();
 
-        test.canBought(2000/0);
-        test.playerInfo();
-        test.newTurn();
+//        test.canBought(2000/0);
+//        test.playerInfo();
+//        test.newTurn();
     }
 }

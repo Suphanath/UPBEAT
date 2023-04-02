@@ -29,30 +29,18 @@ public class Configs {
             System.err.println("Can not read this file.");
             return;
         }
-//        m = Integer.parseInt(props.getProperty("m"));
-//        n = Integer.parseInt(props.getProperty("n"));
-//        init_plan_min = Long.parseLong(props.getProperty("init_plan_min"));
-//        init_plan_sec = Long.parseLong(props.getProperty("init_plan_sec"));
-//        init_budget = Long.parseLong(props.getProperty("init_budget"));
-//        init_center_dep = Integer.parseInt(props.getProperty("init_center_dep"));
-//        plan_rev_min = Integer.parseInt(props.getProperty("plan_rev_min"));
-//        plan_rev_sec = Integer.parseInt(props.getProperty("plan_rev_sec"));
-//        rev_cost = Integer.parseInt(props.getProperty("rev_cost"));
-//        max_dep = Integer.parseInt(props.getProperty("max_dep"));
-//        interest_pct = Integer.parseInt(props.getProperty("interest_pct"));
-//        start_deposit = Integer.parseInt(props.getProperty("start_deposit"));
-
-        m=20;
-        n=15;
-        init_plan_min=5;
-        init_plan_sec=0;
-        init_budget=10000;
-        init_center_dep=100;
-        plan_rev_min=30;
-        plan_rev_sec=0;
-        rev_cost=100;
-        max_dep=1000000;
-        interest_pct=5;
+        m = Integer.parseInt(props.getProperty("m"));
+        n = Integer.parseInt(props.getProperty("n"));
+        init_plan_min = Long.parseLong(props.getProperty("init_plan_min"));
+        init_plan_sec = Long.parseLong(props.getProperty("init_plan_sec"));
+        init_budget = Long.parseLong(props.getProperty("init_budget"));
+        init_center_dep = Integer.parseInt(props.getProperty("init_center_dep"));
+        plan_rev_min = Integer.parseInt(props.getProperty("plan_rev_min"));
+        plan_rev_sec = Integer.parseInt(props.getProperty("plan_rev_sec"));
+        rev_cost = Integer.parseInt(props.getProperty("rev_cost"));
+        max_dep = Integer.parseInt(props.getProperty("max_dep"));
+        interest_pct = Integer.parseInt(props.getProperty("interest_pct"));
+        start_deposit = Integer.parseInt(props.getProperty("start_deposit", "0"));
     }
 
     public static Configs conf(){

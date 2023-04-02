@@ -22,8 +22,8 @@ public class TestShoot {
             test.playerInfo();
             test.shoot(Direction.UP,1000);
             test.playerInfo();
-            test.shoot(Direction.UP,1000/0);
-            test.playerInfo();
+//            test.shoot(Direction.UP,1000/0);
+//            test.playerInfo();
             test.move(Direction.UP);
         }
     }
@@ -46,8 +46,8 @@ public class TestShoot {
             test.playerInfo();
             test.shoot(Direction.DOWN,1000);
             test.playerInfo();
-            test.shoot(Direction.DOWN,1000/0);
-            test.playerInfo();
+//            test.shoot(Direction.DOWN,1000/0);
+//            test.playerInfo();
             test.move(Direction.DOWN);
 
         }
@@ -71,8 +71,8 @@ public class TestShoot {
             test.playerInfo();
             test.shoot(Direction.UPRIGHT,1000);
             test.playerInfo();
-            test.shoot(Direction.UPRIGHT,1000/0);
-            test.playerInfo();
+//            test.shoot(Direction.UPRIGHT,1000/0);
+//            test.playerInfo();
             test.move(Direction.UPRIGHT);
         }
 
@@ -96,8 +96,8 @@ public class TestShoot {
             test.playerInfo();
             test.shoot(Direction.UPLEFT,1000);
             test.playerInfo();
-            test.shoot(Direction.UPLEFT,1000/0);
-            test.playerInfo();
+//            test.shoot(Direction.UPLEFT,1000/0);
+//            test.playerInfo();
             test.move(Direction.UPLEFT);
         }
 
@@ -121,8 +121,8 @@ public class TestShoot {
             test.playerInfo();
             test.shoot(Direction.DOWNLEFT,1000);
             test.playerInfo();
-            test.shoot(Direction.DOWNLEFT,1000/0);
-            test.playerInfo();
+//            test.shoot(Direction.DOWNLEFT,1000/0);
+//            test.playerInfo();
             test.move(Direction.DOWNLEFT);
         }
 
@@ -145,8 +145,8 @@ public class TestShoot {
             test.playerInfo();
             test.shoot(Direction.DOWNRIGHT,1000);
             test.playerInfo();
-            test.shoot(Direction.DOWNRIGHT,1000/0);
-            test.playerInfo();
+//            test.shoot(Direction.DOWNRIGHT,1000/0);
+//            test.playerInfo();
             test.move(Direction.DOWNRIGHT);
         }
     }

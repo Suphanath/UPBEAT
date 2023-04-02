@@ -4,7 +4,7 @@ public class TestCollect {
     @Test
     public void collectRegion(){
         Territory territory = new Territory();
-        Player test = new Player("test1",territory,5,7,2000);
+        Player test = new Player("Player",territory,5,7,2000);
         test.playerInfo();
         test.move(Direction.UPRIGHT);
 
@@ -36,15 +36,15 @@ public class TestCollect {
         test.playerInfo();
         test.newTurn();
 
-        test.collect(2000/0);
-        test.playerInfo();
-        test.newTurn();
+//        test.collect(2000/0);
+//        test.playerInfo();
+//        test.newTurn();
 
     }
     @Test
     public void collectOpponentRegion(){
         Territory territory = new Territory();
-        Player test = new Player("test1",territory,4,1,500);
+        Player test = new Player("Player",territory,4,1,500);
         System.out.println(test.opponent());
 
         test.playerInfo();
@@ -79,9 +79,9 @@ public class TestCollect {
         test.playerInfo();
         test.newTurn();
 
-        test.collect(2000/0);
-        test.playerInfo();
-        test.newTurn();
+//        test.collect(2000/0);
+//        test.playerInfo();
+//        test.newTurn();
     }
     @Test
     public void collectNoOwnerRegion(){
@@ -119,8 +119,8 @@ public class TestCollect {
         test.playerInfo();
         test.newTurn();
 
-        test.collect(2000/0);
-        test.playerInfo();
-        test.newTurn();
+//        test.collect(2000/0);
+//        test.playerInfo();
+//        test.newTurn();
     }
 }

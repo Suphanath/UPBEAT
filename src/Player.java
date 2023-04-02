@@ -300,7 +300,7 @@ public class Player {
 
     public void playerInfo() {
         String message = String.format("Name: %s \nBudget: %d \nOwned regions: %d", this.name, this.budget, ownedRegions.size());
-        String positionMessage = String.format("Position: (%d, %d)", pos[0], pos[1]);
+        String positionMessage = String.format("Position: (%d, %d)\n", pos[0], pos[1]);
         System.out.println(message);
         System.out.println(positionMessage);
     }

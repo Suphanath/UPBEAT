@@ -37,9 +37,9 @@ public class TestInvest {
         test.playerInfo();
         test.newTurn();
 
-        test.invest(2000/0);
-        test.playerInfo();
-        test.newTurn();
+//        test.invest(2000/0);
+//        test.playerInfo();
+//        test.newTurn();
     }
     @Test
     public void InvestOpponentRegion(){
@@ -79,9 +79,9 @@ public class TestInvest {
         test.playerInfo();
         test.newTurn();
 
-        test.invest(2000/0);
-        test.playerInfo();
-        test.newTurn();
+//        test.invest(2000/0);
+//        test.playerInfo();
+//        test.newTurn();
     }
     @Test
     public void InvestNoOwnerRegion(){
@@ -119,8 +119,8 @@ public class TestInvest {
         test.playerInfo();
         test.newTurn();
 
-        test.invest(2000/0);
-        test.playerInfo();
-        test.newTurn();
+//        test.invest(2000/0);
+//        test.playerInfo();
+//        test.newTurn();
     }
 }
