@@ -14,8 +14,9 @@ public class Region {
         this.rows = rows;
         this.cols = cols;
         this.deposit = Configs.conf().start_deposit;
-        this.interest = Configs.conf().start_deposit;
+        this.interest = Configs.conf().interest_pct;
         this.owner = null;
+        this.isCityCenter = false;
     }
 
     // getter and setter methods
@@ -35,7 +36,7 @@ public class Region {
         this.isCityCenter = isCityCenter;
     }
 
-    public double getDeposit() {
+    public long getDeposit() {
         return this.deposit;
     }
 
@@ -108,24 +109,21 @@ public class Region {
         }
     }
 
-    public long collectDeposit(long expenditure) {
+    public long calculateCollect(long expenditure) {
         System.out.println("Current deposit: " + deposit);
-        long collectedAmount = 0;
-        if (deposit >= expenditure) {
-            deposit -= expenditure;
-            collectedAmount = expenditure;
+        if (this.deposit - expenditure < 0)
+            return 0;
+        else if (this.deposit - expenditure == 0) {
+            this.deposit = 0;
+            this.interest = Configs.conf().interest_pct;
+            this.owner.removeRegion(this);
+            this.setOwner(null);
+            return expenditure;
         } else {
-            collectedAmount = deposit;
-            deposit = 0;
+            this.deposit = this.deposit - expenditure;
+            return expenditure;
         }
-        if (deposit == 0) {
-            interest = Configs.conf().interest_pct;
-            if (owner != null) {
-                owner.removeRegion(this);
-                setOwner(null);
-            }
-        }
-        return collectedAmount;
+
     }
 
     public void regionInfo() {
